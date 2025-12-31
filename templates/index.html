@@ -1,23 +1,9 @@
-<!-- ============================================================
-     © 2025 AreneSha AI Labs
-
-     This software is the intellectual property of AreneSha AI Labs.
-     All rights reserved.
-
-     Unauthorized copying, modification, distribution, or use of
-     this software, via any medium, is strictly prohibited unless
-     explicitly permitted in writing by AreneSha AI Labs.
-
-     Proprietary and Confidential
-============================================================ -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Arenesha AI Labs | YOLOv8 Workshop</title>
 
-  <!-- Tailwind -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
   <style>
@@ -74,24 +60,17 @@
 
 <body class="min-h-screen">
 
-<!-- HEADER -->
 <header class="text-center py-6">
-  <div class="flex justify-center">
-    <img src="/static/Arenesha-Logo.png"
-         class="w-56"
-         alt="Arenesha AI Labs">
-  </div>
-
+  <img src="/static/Arenesha-Logo.png" class="w-56 mx-auto">
   <p class="mt-2 tracking-widest uppercase text-sm text-gray-300">
     YOLOv8 Vision Workshop
   </p>
 </header>
 
-<!-- MAIN -->
 <main class="max-w-5xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-  <!-- IMAGE INFERENCE -->
-  <section class="panel rounded-xl p-6 shadow text-center">
+  <!-- IMAGE DETECTION -->
+  <section class="panel rounded-xl p-6 text-center">
     <h2 class="text-xl font-semibold text-yellow-300 mb-4 uppercase">
       Image Detection
     </h2>
@@ -117,13 +96,14 @@
          class="mt-6 rounded-lg border border-yellow-500 hidden max-w-full">
   </section>
 
-  <!-- WEBCAM -->
-  <section class="panel rounded-xl p-6 shadow text-center">
+  <!-- LIVE WEBCAM -->
+  <section class="panel rounded-xl p-6 text-center">
     <h2 class="text-xl font-semibold text-yellow-300 mb-4 uppercase">
       Live Webcam Detection
     </h2>
 
     <form id="webcam-form" class="space-y-4">
+
       <div>
         <input type="file" name="model" accept=".pt" required>
         <p class="hint mt-1">📦 Upload trained YOLO model (.pt file)</p>
@@ -134,14 +114,17 @@
       </button>
     </form>
 
-    <p class="text-xs text-gray-400 mt-4">
-      Press <b>Q</b> to stop webcam
-    </p>
+    <button id="stop-btn"
+            class="btn-primary mx-auto block mt-3 hidden bg-red-500">
+      Stop Webcam
+    </button>
+
+    <img id="webcam-stream"
+         class="mt-6 rounded-lg border border-yellow-500 hidden w-full">
   </section>
 
 </main>
 
-<!-- FOOTER -->
 <footer class="text-center text-xs text-gray-400 mt-10 pb-6">
   © 2025 AreneSha AI Labs. All rights reserved.
 </footer>
@@ -150,17 +133,41 @@
 document.getElementById("image-form").addEventListener("submit", async e => {
   e.preventDefault();
   const formData = new FormData(e.target);
-  const res = await fetch("/run_image_inference", { method: "POST", body: formData });
+  const res = await fetch("/run_image_inference", {
+    method: "POST",
+    body: formData
+  });
   const data = await res.json();
+
   const img = document.getElementById("result-img");
   img.src = data.result_image + "?t=" + Date.now();
   img.classList.remove("hidden");
 });
 
-document.getElementById("webcam-form").addEventListener("submit", async e => {
+const webcamForm = document.getElementById("webcam-form");
+const webcamImg = document.getElementById("webcam-stream");
+const stopBtn = document.getElementById("stop-btn");
+
+webcamForm.addEventListener("submit", async e => {
   e.preventDefault();
-  const formData = new FormData(e.target);
-  await fetch("/run_webcam", { method: "POST", body: formData });
+  const formData = new FormData(webcamForm);
+
+  await fetch("/start_webcam", {
+    method: "POST",
+    body: formData
+  });
+
+  webcamImg.src = "/video_feed";
+  webcamImg.classList.remove("hidden");
+  stopBtn.classList.remove("hidden");
+});
+
+stopBtn.addEventListener("click", async () => {
+  await fetch("/stop_webcam", { method: "POST" });
+
+  webcamImg.src = "";
+  webcamImg.classList.add("hidden");
+  stopBtn.classList.add("hidden");
 });
 </script>
 
