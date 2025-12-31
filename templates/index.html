@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Arenesha AI Labs | YOLOv8 Workshop</title>
+
+  <!-- Tailwind -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: #F5C079;
+      --gold-hover: #B07C4D;
+      --panel-bg: rgba(161,117,49,0.1);
+      --panel-border: #BC8A4B;
+    }
+
+    body {
+      background: linear-gradient(to right, #000000, #2F210E);
+      color: white;
+      font-family: Inter, system-ui, sans-serif;
+    }
+
+    .panel {
+      background-color: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+    }
+
+    .btn-primary {
+      background-color: var(--gold);
+      color: black;
+      padding: 0.6rem 1.4rem;
+      border-radius: 0.6rem;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      width: 100%;
+      max-width: 260px;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--gold-hover);
+      transform: translateY(-1px);
+    }
+
+    input {
+      background: #1F1F1F;
+      border: 1px solid #3A3A3A;
+      color: white;
+      padding: 0.55rem;
+      border-radius: 0.5rem;
+      width: 100%;
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: #d1d5db;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen">
+
+<!-- HEADER -->
+<header class="text-center py-6">
+  <div class="flex justify-center">
+    <img src="/static/Arenesha-Logo.png"
+         class="w-56"
+         alt="Arenesha AI Labs">
+  </div>
+
+  <p class="mt-2 tracking-widest uppercase text-sm text-gray-300">
+    YOLOv8 Vision Workshop
+  </p>
+</header>
+
+<!-- MAIN -->
+<main class="max-w-5xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+  <!-- IMAGE INFERENCE -->
+  <section class="panel rounded-xl p-6 shadow text-center">
+    <h2 class="text-xl font-semibold text-yellow-300 mb-4 uppercase">
+      Image Detection
+    </h2>
+
+    <form id="image-form" class="space-y-4">
+
+      <!-- MODEL FILE -->
+      <div>
+        <input type="file" name="model" accept=".pt" required>
+        <p class="hint mt-1">
+          📦 Upload trained YOLO model (.pt file)
+        </p>
+      </div>
+
+      <!-- INPUT IMAGE -->
+      <div>
+        <input type="file" name="image" accept="image/*" required>
+        <p class="hint mt-1">
+          🖼️ Upload image for detection (jpg / png)
+        </p>
+      </div>
+
+      <button class="btn-primary mx-auto block">
+        Run Detection
+      </button>
+    </form>
+
+    <img id="result-img"
+         class="mt-6 rounded-lg border border-yellow-500 hidden max-w-full">
+  </section>
+
+  <!-- WEBCAM -->
+  <section class="panel rounded-xl p-6 shadow text-center">
+    <h2 class="text-xl font-semibold text-yellow-300 mb-4 uppercase">
+      Live Webcam Detection
+    </h2>
+
+    <form id="webcam-form" class="space-y-4">
+
+      <!-- MODEL FILE -->
+      <div>
+        <input type="file" name="model" accept=".pt" required>
+        <p class="hint mt-1">
+          📦 Upload trained YOLO model (.pt file)
+        </p>
+      </div>
+
+      <button class="btn-primary mx-auto block">
+        Start Webcam
+      </button>
+    </form>
+
+    <p class="text-xs text-gray-400 mt-4">
+      Press <b>Q</b> to stop webcam
+    </p>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="text-center text-xs text-gray-400 mt-10 pb-6">
+  © Arenesha AI Labs — YOLOv8 Hands-On Workshop
+</footer>
+
+<script>
+/* ================= IMAGE INFERENCE ================= */
+document.getElementById("image-form").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+
+  const res = await fetch("/run_image_inference", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+  const img = document.getElementById("result-img");
+
+  img.src = data.result_image + "?t=" + Date.now();
+  img.classList.remove("hidden");
+});
+
+/* ================= WEBCAM ================= */
+document.getElementById("webcam-form").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+
+  await fetch("/run_webcam", {
+    method: "POST",
+    body: formData
+  });
+});
+</script>
+
+</body>
+</html>
+
