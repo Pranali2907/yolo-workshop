@@ -1,3 +1,15 @@
+# ============================================================
+#  © 2025 Arenesha AI Labs
+#
+#  This software is the intellectual property of AreneSha AI Labs.
+#  All rights reserved.
+#
+#  Unauthorized copying, modification, distribution, or use of
+#  this software, via any medium, is strictly prohibited unless
+#  explicitly permitted in writing by AreneSha AI Labs.
+#
+#  Proprietary and Confidential
+# ============================================================
 from flask import Flask, render_template, request, jsonify
 import os
 import cv2

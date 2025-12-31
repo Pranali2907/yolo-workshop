@@ -1,3 +1,16 @@
+<!-- ============================================================
+     © 2025 AreneSha AI Labs
+
+     This software is the intellectual property of AreneSha AI Labs.
+     All rights reserved.
+
+     Unauthorized copying, modification, distribution, or use of
+     this software, via any medium, is strictly prohibited unless
+     explicitly permitted in writing by AreneSha AI Labs.
+
+     Proprietary and Confidential
+============================================================ -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,20 +98,14 @@
 
     <form id="image-form" class="space-y-4">
 
-      <!-- MODEL FILE -->
       <div>
         <input type="file" name="model" accept=".pt" required>
-        <p class="hint mt-1">
-          📦 Upload trained YOLO model (.pt file)
-        </p>
+        <p class="hint mt-1">📦 Upload trained YOLO model (.pt file)</p>
       </div>
 
-      <!-- INPUT IMAGE -->
       <div>
         <input type="file" name="image" accept="image/*" required>
-        <p class="hint mt-1">
-          🖼️ Upload image for detection (jpg / png)
-        </p>
+        <p class="hint mt-1">🖼️ Upload image for detection (jpg / png)</p>
       </div>
 
       <button class="btn-primary mx-auto block">
@@ -117,13 +124,9 @@
     </h2>
 
     <form id="webcam-form" class="space-y-4">
-
-      <!-- MODEL FILE -->
       <div>
         <input type="file" name="model" accept=".pt" required>
-        <p class="hint mt-1">
-          📦 Upload trained YOLO model (.pt file)
-        </p>
+        <p class="hint mt-1">📦 Upload trained YOLO model (.pt file)</p>
       </div>
 
       <button class="btn-primary mx-auto block">
@@ -140,38 +143,24 @@
 
 <!-- FOOTER -->
 <footer class="text-center text-xs text-gray-400 mt-10 pb-6">
-  © Arenesha AI Labs — YOLOv8 Hands-On Workshop
+  © 2025 AreneSha AI Labs. All rights reserved.
 </footer>
 
 <script>
-/* ================= IMAGE INFERENCE ================= */
 document.getElementById("image-form").addEventListener("submit", async e => {
   e.preventDefault();
-
   const formData = new FormData(e.target);
-
-  const res = await fetch("/run_image_inference", {
-    method: "POST",
-    body: formData
-  });
-
+  const res = await fetch("/run_image_inference", { method: "POST", body: formData });
   const data = await res.json();
   const img = document.getElementById("result-img");
-
   img.src = data.result_image + "?t=" + Date.now();
   img.classList.remove("hidden");
 });
 
-/* ================= WEBCAM ================= */
 document.getElementById("webcam-form").addEventListener("submit", async e => {
   e.preventDefault();
-
   const formData = new FormData(e.target);
-
-  await fetch("/run_webcam", {
-    method: "POST",
-    body: formData
-  });
+  await fetch("/run_webcam", { method: "POST", body: formData });
 });
 </script>
 
